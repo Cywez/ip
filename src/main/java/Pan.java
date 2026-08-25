@@ -45,6 +45,19 @@ public class Pan {
                 } catch (NumberFormatException e) {
                     System.out.println(" Ooh wait wait~ PanPan needs a real task number, like \"mark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
                 }
+            } else if (input.startsWith("unmark ")) {
+                try {
+                    int index = Integer.parseInt(input.substring(7).trim()) - 1;
+                    if (index < 0 || index >= count) {
+                        System.out.println(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
+                    } else {
+                        done[index] = false;
+                        System.out.println(" Awww not done yet? PanPan unmarked this task already... PanPan thinks you can do better!:");
+                        System.out.println("   [ ] " + list[index]);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println(" Ooh wait wait~ PanPan needs a real task number, like \"unmark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
+                }
             } else {
                 list[count] = input;
                 count++;
