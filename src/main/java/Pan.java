@@ -18,12 +18,22 @@ public class Pan {
         System.out.println(LINE);
 
         Scanner scanner = new Scanner(System.in);
+        String[] list = new String[100];
+        int count = 0;
         while (true) {
             String input = scanner.nextLine();
             if (input.equals("bye")) {
                 break;
             }
-            System.out.println(" " + input);
+            if (input.equals("list")) {
+                for (int i = 0; i < count; i++) {
+                    System.out.println(" " + (i + 1) + ". " + list[i]);
+                }
+            } else {
+                list[count] = input;
+                count++;
+                System.out.println(" added: " + input);
+            }
             System.out.println(LINE);
         }
 
