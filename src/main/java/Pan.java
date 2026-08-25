@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Pan {
 
     private static final String LINE = "____________________________________________________________";
@@ -14,7 +16,19 @@ public class Pan {
         System.out.println("PanPan is SUPER happy you're here today, teehee~");
         System.out.println("What can PanPan do for you todayy??");
         System.out.println(LINE);
+
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equals("bye")) {
+                break;
+            }
+            System.out.println(" " + input);
+            System.out.println(LINE);
+        }
+
         System.out.println("Byeee Byeee! PanPan will stay cute for you in the meantime! Mwah mwah~ (˘▾˘~)");
         System.out.println(LINE);
+        scanner.close();
     }
 }
