@@ -18,9 +18,7 @@ public class Pan {
         System.out.println(LINE);
 
         Scanner scanner = new Scanner(System.in);
-        String[] list = new String[100];
-        // Parallel array tracking done-state per task (no Task class, per project scope).
-        boolean[] done = new boolean[100];
+        Task[] tasks = new Task[100];
         int count = 0;
         while (true) {
             String input = scanner.nextLine();
@@ -30,7 +28,7 @@ public class Pan {
             if (input.equals("list")) {
                 System.out.println(" Ooh ooh, here's what PanPan dug up for you~ PanPan's list-finding skills are Pan-tastic, teehee!!:");
                 for (int i = 0; i < count; i++) {
-                    System.out.println(" " + (i + 1) + "." + (done[i] ? "[X]" : "[ ]") + " " + list[i]);
+                    System.out.println(" " + (i + 1) + "." + tasks[i]);
                 }
             } else if (input.startsWith("mark ")) {
                 try {
@@ -38,9 +36,9 @@ public class Pan {
                     if (index < 0 || index >= count) {
                         System.out.println(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
                     } else {
-                        done[index] = true;
+                        tasks[index].markAsDone();
                         System.out.println(" Yayyy!! PanPan marked this task as done, Pan-tastic job!!");
-                        System.out.println("   [X] " + list[index]);
+                        System.out.println("   " + tasks[index]);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(" Ooh wait wait~ PanPan needs a real task number, like \"mark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
@@ -51,15 +49,15 @@ public class Pan {
                     if (index < 0 || index >= count) {
                         System.out.println(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
                     } else {
-                        done[index] = false;
+                        tasks[index].markAsNotDone();
                         System.out.println(" Awww not done yet? PanPan unmarked this task already... PanPan thinks you can do better!:");
-                        System.out.println("   [ ] " + list[index]);
+                        System.out.println("   " + tasks[index]);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(" Ooh wait wait~ PanPan needs a real task number, like \"unmark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
                 }
             } else {
-                list[count] = input;
+                tasks[count] = new Task(input);
                 count++;
                 System.out.println(" PanPan added " + input + " to your list! PanPan gets bamboo treats? (´,,•ω•,,)");
             }
