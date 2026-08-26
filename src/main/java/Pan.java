@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Pan {
@@ -18,8 +19,7 @@ public class Pan {
         System.out.println(LINE);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[100];
-        int count = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         while (true) {
             String input = scanner.nextLine();
             if (input.equals("bye")) {
@@ -29,8 +29,8 @@ public class Pan {
             try {
                 if (input.equals("list")) {
                     System.out.println(" Ooh ooh, here's what PanPan dug up for you~ PanPan's list-finding skills are Pan-tastic, teehee!!:");
-                    for (int i = 0; i < count; i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
 
                 } else if (input.startsWith("mark ")) {
@@ -40,12 +40,12 @@ public class Pan {
                     } catch (NumberFormatException e) {
                         throw new PanException(" Ooh wait wait~ PanPan needs a real task number, like \"mark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
                     }
-                    if (index < 0 || index >= count) {
+                    if (index < 0 || index >= tasks.size()) {
                         throw new PanException(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
                     }
-                    tasks[index].markAsDone();
+                    tasks.get(index).markAsDone();
                     System.out.println(" Yayyy!! PanPan marked this task as done, Pan-tastic job!!");
-                    System.out.println("   " + tasks[index]);
+                    System.out.println("   " + tasks.get(index));
 
                 } else if (input.startsWith("unmark ")) {
                     int index;
@@ -54,21 +54,20 @@ public class Pan {
                     } catch (NumberFormatException e) {
                         throw new PanException(" Ooh wait wait~ PanPan needs a real task number, like \"unmark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
                     }
-                    if (index < 0 || index >= count) {
+                    if (index < 0 || index >= tasks.size()) {
                         throw new PanException(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
                     }
-                    tasks[index].markAsNotDone();
+                    tasks.get(index).markAsNotDone();
                     System.out.println(" Awww not done yet? PanPan unmarked this task already... PanPan thinks you can do better!:");
-                    System.out.println("   " + tasks[index]);
+                    System.out.println("   " + tasks.get(index));
 
                 } else if (input.equals("todo") || input.startsWith("todo ")) {
                     String description = input.length() > 4 ? input.substring(5).trim() : "";
                     if (description.isEmpty()) {
                         throw new PanException(" Ehhh? PanPan is confused... Is there supposed to be something after todo?");
                     }
-                    tasks[count] = new Todo(description);
-                    count++;
-                    System.out.println(" PanPan added this todo to your list! " + tasks[count - 1]);
+                    tasks.add(new Todo(description));
+                    System.out.println(" PanPan added this todo to your list! " + tasks.get(tasks.size() - 1));
                     System.out.println(" PanPan will watch and make sure you do it!");
 
                 } else if (input.equals("deadline") || input.startsWith("deadline ")) {
@@ -82,9 +81,8 @@ public class Pan {
                         throw new PanException(" Urmm.. A deadline needs a /by date, PanPan can't guess it for you~");
                     }
                     String by = parts[1].trim();
-                    tasks[count] = new Deadline(description, by);
-                    count++;
-                    System.out.println(" PanPan added this deadline to your list! " + tasks[count - 1]);
+                    tasks.add(new Deadline(description, by));
+                    System.out.println(" PanPan added this deadline to your list! " + tasks.get(tasks.size() - 1));
                     System.out.println(" PanPan will watch and make sure you do it!");
 
                 } else if (input.equals("event") || input.startsWith("event ")) {
@@ -103,10 +101,29 @@ public class Pan {
                     }
                     String start = parts2[0].trim();
                     String end = parts2[1].trim();
-                    tasks[count] = new Event(description, start, end);
-                    count++;
-                    System.out.println(" PanPan added this event to your list! " + tasks[count - 1]);
+                    tasks.add(new Event(description, start, end));
+                    System.out.println(" PanPan added this event to your list! " + tasks.get(tasks.size() - 1));
                     System.out.println(" PanPan will watch and make sure you do it!");
+
+                } else if (input.equals("delete") || input.startsWith("delete ")) {
+                    String indexStr = input.length() > 6 ? input.substring(7).trim() : "";
+                    if (indexStr.isEmpty()) {
+                        throw new PanException(" Ehhh? PanPan is confused... Which task do you wanna delete?");
+                    }
+                    int index;
+                    try {
+                        index = Integer.parseInt(indexStr) - 1;
+                    } catch (NumberFormatException e) {
+                        throw new PanException(" Ooh wait wait~ PanPan needs a real task number, like \"delete 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
+                    }
+                    if (index < 0 || index >= tasks.size()) {
+                        throw new PanException(" Ehh?? PanPan looked everywhere but that task number doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
+                    }
+                    Task removed = tasks.get(index);
+                    tasks.remove(index);
+                    System.out.println(" Okayyy, PanPan waved byebye to this task and removed it from the list~ (｡•̀ᴗ-)✧");
+                    System.out.println("   " + removed);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list!");
                 } else {
                     throw new PanException(" SORRYYY! PanPan don't know what that means. (╥﹏╥)");
                 }
