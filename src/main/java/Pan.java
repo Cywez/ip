@@ -56,15 +56,39 @@ public class Pan {
                 } catch (NumberFormatException e) {
                     System.out.println(" Ooh wait wait~ PanPan needs a real task number, like \"unmark 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
                 }
+            } else if (input.startsWith("todo ")) {
+                String description = input.substring(5);
+                tasks[count] = new Todo(description);
+                count++;
+                System.out.println(" PanPan added this todo to your list! " + tasks[count - 1]);
+                System.out.println(" PanPan will watch and make sure you do it!");
+            } else if (input.startsWith("deadline ")) {
+                String[] parts = input.substring(9).split("/by", 2);
+                String description = parts[0].trim();
+                String by = parts[1].trim();
+                tasks[count] = new Deadline(description, by);
+                count++;
+                System.out.println(" PanPan added this deadline to your list! " + tasks[count - 1]);
+                System.out.println(" PanPan will watch and make sure you do it!");
+            } else if (input.startsWith("event ")) {
+                String[] parts = input.substring(6).split("/from", 2);
+                String description = parts[0].trim();
+                String[] parts2 = parts[1].trim().split("/to", 2);
+                String start = parts2[0].trim();
+                String end = parts2[1].trim();
+                tasks[count] = new Event(description, start, end);
+                count++;
+                System.out.println(" PanPan added this event to your list! " + tasks[count - 1]);
+                System.out.println(" PanPan will watch and make sure you do it!");
             } else {
                 tasks[count] = new Task(input);
                 count++;
-                System.out.println(" PanPan added " + input + " to your list! PanPan gets bamboo treats? (´,,•ω•,,)");
+                System.out.println(" PanPan added " + tasks[count - 1] + " to your list! PanPan gets bamboo treats? (´,,•ω•,,)");
             }
             System.out.println(LINE);
         }
 
-        System.out.println("Byeee Byeee! PanPan will stay cute for you in the meantime! Mwah mwah~ (˘▾˘~)");
+        System.out.println(" Byeee Byeee! PanPan will stay cute for you in the meantime! Mwah mwah~ (˘▾˘~)");
         System.out.println(LINE);
         scanner.close();
     }
