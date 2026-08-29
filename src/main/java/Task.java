@@ -11,22 +11,29 @@ public class Task {
     }
 
     public String getStatusIcon() {
-
         return (isDone ? "X" : " "); // mark done task with X
     }
 
     public void markAsDone() {
-
         isDone = true;
     }
 
     public void markAsNotDone() {
-
         isDone = false;
     }
 
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;
+    }
+
+    /**
+     * Returns the on-disk representation of this task's status and
+     * description, e.g. {@code "1 | read book"}. Subclasses prepend their
+     * type tag and append any extra fields. This is deliberately separate
+     * from {@link #toString()}, which produces the pretty display format.
+     */
+    public String toFileString() {
+        return (isDone ? "1" : "0") + " | " + description;
     }
 }
