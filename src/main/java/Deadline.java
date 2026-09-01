@@ -1,22 +1,33 @@
+import java.time.LocalDateTime;
+
 /**
- * Represents a deadline: a task that must be done by a given date or time.
+ * Represents a deadline: a task that must be done by a given date and time.
  */
 public class Deadline extends Task {
-    private String by;
 
-    public Deadline(String description, String by) {
+    /**
+     * The moment the task is due. Stored as a real {@link LocalDateTime}
+     * (date + time, no timezone) rather than free text, so the chatbot can
+     * reformat it and, later, reason about it.
+     */
+    private LocalDateTime by;
+
+    public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + this.by + ")";
+        return "[D]" + super.toString() + " (by: " + Parser.formatDateTime(by) + ")";
     }
 
     /**
      * Returns the save-file line for a deadline, e.g.
-     * {@code "D | 0 | return book | June 6th"}.
+     * {@code "D | 0 | return book | 2019-10-15T18:00"}. The date is written in
+     * ISO-8601 form ({@link LocalDateTime#toString()}) so it reloads exactly
+     * via {@link Parser#parseStoredDateTime(String)}, independent of the
+     * display format.
      */
     @Override
     public String toFileString() {
