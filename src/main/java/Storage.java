@@ -36,8 +36,15 @@ public class Storage {
         try (Scanner scanner = new Scanner(FILE)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
-                if (!line.isEmpty()) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                try {
                     tasks.add(parseTask(line));
+                } catch (RuntimeException e) {
+                    // One malformed line (e.g. an old save with a free-text
+                    // date like "Sunday") should not stop the rest loading.
+                    System.out.println(" PanPan skipped a save line it couldn't understand~ (｡•́︿•̀｡)");
                 }
             }
         } catch (IOException e) {
@@ -82,10 +89,12 @@ public class Storage {
         Task task;
         switch (type) {
         case "D":
-            task = new Deadline(description, parts[3]);
+            task = new Deadline(description, Parser.parseStoredDateTime(parts[3]));
             break;
         case "E":
-            task = new Event(description, parts[3], parts[4]);
+            task = new Event(description,
+                    Parser.parseStoredDateTime(parts[3]),
+                    Parser.parseStoredDateTime(parts[4]));
             break;
         default:
             task = new Todo(description);
