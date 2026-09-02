@@ -185,7 +185,6 @@ public class ParserTest {
                 Parser.parseEvent("project meeting /from someday /to 2019-12-01 1600"));
     }
 
-
     @Test
     public void parseEvent_unparseableToDate_exceptionThrown() {
         assertThrows(PanException.class, () ->

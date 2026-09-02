@@ -67,7 +67,8 @@ public class Pan {
 
                 case "todo":
                     if (arguments.isEmpty()) {
-                        throw new PanException(" Ehhh? PanPan is confused... Is there supposed to be something after todo?");
+                        throw new PanException(" Ehhh? PanPan is confused... "
+                                + "Is there supposed to be something after todo?");
                     }
                     tasks.add(new Todo(arguments));
                     storage.save(tasks.asList());
@@ -115,6 +116,7 @@ public class Pan {
         ui.close();
     }
 
+    /** Launches the PanPan chatbot. */
     public static void main(String[] args) {
         new Pan().run();
     }

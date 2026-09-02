@@ -14,6 +14,7 @@ public class Deadline extends Task {
      */
     private LocalDateTime by;
 
+    /** Creates a deadline: a task with the given description, due at {@code by}. */
     public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;

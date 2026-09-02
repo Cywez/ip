@@ -14,6 +14,7 @@ public class Event extends Task {
     /** When the event ends. */
     private LocalDateTime end;
 
+    /** Creates an event with the given description, running from {@code start} to {@code end}. */
     public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
         this.start = start;

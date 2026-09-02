@@ -25,10 +25,6 @@ dependencies {
 test {
     useJUnitPlatform()
 
-    // TestPan is a manual (non-JUnit) harness, so there may be no JUnit tests to
-    // discover yet. Without this, Gradle 9 fails the :test task in that situation.
-    failOnNoDiscoveredTests = false
-
     testLogging {
         events 'passed', 'skipped', 'failed'
 

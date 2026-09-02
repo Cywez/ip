@@ -5,6 +5,7 @@ package pan;
  */
 public class Todo extends Task {
 
+    /** Creates a to-do with the given description. */
     public Todo(String description) {
         super(description);
     }
