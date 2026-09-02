@@ -135,7 +135,7 @@ public class Pan {
             index = Integer.parseInt(arguments.trim()) - 1;
         } catch (NumberFormatException e) {
             throw new PanException(" Ooh wait wait~ PanPan needs a real task number, "
-                    + "like \"" + command + " 2\", okay?? PanPan believes in youuu!! (๑˃́ꇴ˂̀๑)");
+                    + "like \"" + command + " 2\", okay?? PanPan believes in youuu!!");
         }
         if (index < 0 || index >= size) {
             throw new PanException(" Ehh?? PanPan looked everywhere but that task number "
