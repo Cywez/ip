@@ -49,6 +49,15 @@ public class Pan {
                     ui.showList(tasks);
                     break;
 
+                case "find": {
+                    if (arguments.isEmpty()) {
+                        throw new PanException(" Ehhh? PanPan is confused... "
+                                + "What word should PanPan look for?");
+                    }
+                    ui.showFound(tasks.find(arguments));
+                    break;
+                }
+
                 case "mark": {
                     int index = parseTaskNumber(arguments, tasks.size(), "mark");
                     tasks.get(index).markAsDone();

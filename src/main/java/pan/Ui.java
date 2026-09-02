@@ -71,6 +71,23 @@ public class Ui {
         }
     }
 
+    /**
+     * Prints the tasks that matched a {@code find} command, numbered from 1,
+     * or a friendly note when nothing matched.
+     *
+     * @param matches the sub-list of tasks whose description contained the keyword.
+     */
+    public void showFound(TaskList matches) {
+        if (matches.isEmpty()) {
+            System.out.println(" Awww, PanPan looked hard but found no matching tasks~ (｡•́︿•̀｡)");
+            return;
+        }
+        System.out.println(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matches.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + matches.get(i));
+        }
+    }
+
     /** Confirms a newly added task. Used for {@code todo}, {@code deadline} and {@code event}. */
     public void showAdded(Task task) {
         System.out.println(" PanPan added this to your list! " + task);

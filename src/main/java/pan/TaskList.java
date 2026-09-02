@@ -60,6 +60,23 @@ public class TaskList {
     }
 
     /**
+     * Returns a new list containing only the tasks whose description contains
+     * the given keyword (case-sensitive substring match). The original list is
+     * left unchanged.
+     *
+     * @param keyword text to search for within each task's description.
+     */
+    public TaskList find(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return new TaskList(matches);
+    }
+
+    /**
      * Returns the backing list so {@link Storage#save(ArrayList)} can write it
      * out. The list is shared, not copied, so callers should only read from it.
      */

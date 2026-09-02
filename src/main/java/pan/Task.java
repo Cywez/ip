@@ -17,6 +17,11 @@ public class Task {
         return (isDone ? "X" : " "); // mark done task with X
     }
 
+    /** Returns this task's description text (without the status icon or type tag). */
+    public String getDescription() {
+        return description;
+    }
+
     public void markAsDone() {
         isDone = true;
     }
