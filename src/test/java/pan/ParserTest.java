@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -63,12 +62,9 @@ public class ParserTest {
         assertEquals("", Parser.arguments("list"));
     }
 
-    @Disabled("TODO: implement - see commandWord_surroundingWhitespace_isTrimmed for the pattern")
     @Test
     public void arguments_extraWhitespaceBetweenWords_isTrimmed() {
-        // Call Parser.arguments("todo    read   ") and assertEquals that it
-        // returns "read" (everything after the first word, with the surrounding
-        // and in-between whitespace collapsed away by the method's trim()).
+        assertEquals("read", Parser.arguments("todo     read    "));
     }
 
     // ---------- parseDateTime ----------
@@ -189,13 +185,10 @@ public class ParserTest {
                 Parser.parseEvent("project meeting /from someday /to 2019-12-01 1600"));
     }
 
-    @Disabled("TODO: implement - see parseEvent_unparseableFromDate_exceptionThrown for the pattern")
+
     @Test
     public void parseEvent_unparseableToDate_exceptionThrown() {
-        // Same shape as parseEvent_unparseableFromDate_exceptionThrown, but put
-        // the bad date after /to instead of after /from:
-        //   "project meeting /from 2019-12-01 1400 /to someday"
-        // assertThrows(PanException.class, ...) because "someday" is not a valid
-        // yyyy-MM-dd HHmm date/time.
+        assertThrows(PanException.class, () ->
+                Parser.parseEvent("project meeting /from 2019-12-01 1600 /to someday"));
     }
 }
