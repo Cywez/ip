@@ -1,3 +1,5 @@
+package pan;
+
 /**
  * Represents a single task with a description and a done/not-done status.
  */

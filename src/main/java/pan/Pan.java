@@ -1,3 +1,5 @@
+package pan;
+
 /**
  * Entry point for the PanPan chatbot. Wires together the three collaborators -
  * the user interface ({@link Ui}), the on-disk task store ({@link Storage}) and

@@ -1,3 +1,5 @@
+package pan;
+
 /**
  * Represents a todo: a task with only a description and no date attached.
  */
