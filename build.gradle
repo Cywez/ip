@@ -25,6 +25,10 @@ dependencies {
 test {
     useJUnitPlatform()
 
+    // TestPan is a manual (non-JUnit) harness, so there may be no JUnit tests to
+    // discover yet. Without this, Gradle 9 fails the :test task in that situation.
+    failOnNoDiscoveredTests = false
+
     testLogging {
         events 'passed', 'skipped', 'failed'
 
@@ -37,7 +41,7 @@ test {
 }
 
 application {
-    mainClass = 'seedu.duke.Duke'
+    mainClass = 'pan.Pan'
 }
 
 jar {
@@ -48,7 +52,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'pan.jar'
 }
 
 run {
