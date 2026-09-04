@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<!--
+  One chat bubble: a wrapped-text Label next to a 100x100 avatar.
+  <fx:root> means "the root node is supplied by the caller" - pan.DialogBox
+  passes itself as both the root and the controller, so there is no
+  fx:controller attribute here.
+-->
+<fx:root type="javafx.scene.layout.HBox" alignment="TOP_RIGHT" spacing="8.0" maxHeight="-Infinity"
+         xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label fx:id="dialog" text="Label" wrapText="true" />
+        <ImageView fx:id="displayPicture" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+    </children>
+</fx:root>
