@@ -83,6 +83,13 @@ public class Storage {
      * {@code TYPE | STATUS | DESCRIPTION [ | EXTRA FIELDS ]}.
      */
     private Task parseTask(String line) {
+        // Deliberately no `assert parts.length >= 3` here: line comes from an on-disk
+        // file, which a user or a previous buggy version could have corrupted, so this
+        // is a real (not just theoretical) failure case, not a programming bug. It must
+        // stay a normal thrown exception - caught as a RuntimeException by load() - so
+        // one bad line is skipped instead of crashing the load. An AssertionError would
+        // NOT be caught there (it doesn't extend RuntimeException), and assertions are
+        // off by default anyway, so an assert would silently do nothing in production.
         String[] parts = line.split(" \\| ");
         String type = parts[0];
         boolean isDone = parts[1].equals("1");

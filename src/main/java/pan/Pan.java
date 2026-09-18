@@ -169,6 +169,8 @@ public class Pan {
             throw new PanException(" Ehh?? PanPan looked everywhere but that task number "
                     + "doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
         }
+        assert index >= 0 && index < size
+                : "the range check above should guarantee a valid index at this point";
         return index;
     }
 }
