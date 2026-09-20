@@ -85,6 +85,8 @@ public class Pan {
                 return handleUnmark(arguments);
             case "delete":
                 return handleDelete(arguments);
+            case "update":
+                return handleUpdate(arguments);
             default:
                 throw new PanException(" SORRYYY! PanPan don't know what that means. (╥﹏╥)");
             }
@@ -151,6 +153,23 @@ public class Pan {
         Task removed = tasks.remove(parseTaskNumber(arguments, tasks.size(), "delete"));
         saveTasks();
         return ui.formatDeleted(removed, tasks.size());
+    }
+
+    /**
+     * Changes one detail of an existing task in place, so that its position in
+     * the list and its done/not-done status both survive the edit.
+     *
+     * @param arguments text of the form {@code TASK_NUMBER /OPTION NEW_VALUE}.
+     */
+    private String handleUpdate(String arguments) throws PanException {
+        requireArguments(arguments,
+                " Ehhh? PanPan is confused... Which task do you wanna change?");
+        Task task = tasks.get(parseTaskNumber(Parser.commandWord(arguments), tasks.size(), "update"));
+
+        Parser.UpdateOption change = Parser.parseUpdateOption(Parser.arguments(arguments));
+        task.applyUpdate(change.name(), change.value());
+        saveTasks();
+        return ui.formatUpdated(task);
     }
 
     /**
