@@ -17,6 +17,9 @@ public class Deadline extends Task {
     /** Creates a deadline: a task with the given description, due at {@code by}. */
     public Deadline(String description, LocalDateTime by) {
         super(description);
+        assert by != null
+                : "by should never be null: Parser.parseDateTime()/parseStoredDateTime() "
+                + "always return a value or throw, never null";
         this.by = by;
     }
 
