@@ -68,62 +68,23 @@ public class Pan {
         try {
             switch (command) {
             case "bye":
-                isExit = true;
-                return ui.getGoodbye();
-
+                return handleBye();
             case "list":
                 return ui.formatList(tasks);
-
             case "find":
-                if (arguments.isEmpty()) {
-                    throw new PanException(" Ehhh? PanPan is confused... "
-                            + "What word should PanPan look for?");
-                }
-                return ui.formatFound(tasks.find(arguments));
-
-            case "mark": {
-                int index = parseTaskNumber(arguments, tasks.size(), "mark");
-                tasks.get(index).markAsDone();
-                storage.save(tasks.asList());
-                return ui.formatMarked(tasks.get(index));
-            }
-
-            case "unmark": {
-                int index = parseTaskNumber(arguments, tasks.size(), "unmark");
-                tasks.get(index).markAsNotDone();
-                storage.save(tasks.asList());
-                return ui.formatUnmarked(tasks.get(index));
-            }
-
+                return handleFind(arguments);
             case "todo":
-                if (arguments.isEmpty()) {
-                    throw new PanException(" Ehhh? PanPan is confused... "
-                            + "Is there supposed to be something after todo?");
-                }
-                tasks.add(new Todo(arguments));
-                storage.save(tasks.asList());
-                return ui.formatAdded(tasks.get(tasks.size() - 1));
-
+                return handleTodo(arguments);
             case "deadline":
-                tasks.add(Parser.parseDeadline(arguments));
-                storage.save(tasks.asList());
-                return ui.formatAdded(tasks.get(tasks.size() - 1));
-
+                return addTask(Parser.parseDeadline(arguments));
             case "event":
-                tasks.add(Parser.parseEvent(arguments));
-                storage.save(tasks.asList());
-                return ui.formatAdded(tasks.get(tasks.size() - 1));
-
-            case "delete": {
-                if (arguments.isEmpty()) {
-                    throw new PanException(" Ehhh? PanPan is confused... Which task do you wanna delete?");
-                }
-                int index = parseTaskNumber(arguments, tasks.size(), "delete");
-                Task removed = tasks.remove(index);
-                storage.save(tasks.asList());
-                return ui.formatDeleted(removed, tasks.size());
-            }
-
+                return addTask(Parser.parseEvent(arguments));
+            case "mark":
+                return handleMark(arguments);
+            case "unmark":
+                return handleUnmark(arguments);
+            case "delete":
+                return handleDelete(arguments);
             default:
                 throw new PanException(" SORRYYY! PanPan don't know what that means. (╥﹏╥)");
             }
@@ -145,6 +106,83 @@ public class Pan {
     /** Launches the console version of the PanPan chatbot. */
     public static void main(String[] args) {
         new Pan().run();
+    }
+
+    /** Records the user's wish to quit and returns the farewell. */
+    private String handleBye() {
+        isExit = true;
+        return ui.getGoodbye();
+    }
+
+    /** Returns the tasks whose description contains the keyword the user gave. */
+    private String handleFind(String arguments) throws PanException {
+        requireArguments(arguments,
+                " Ehhh? PanPan is confused... What word should PanPan look for?");
+        return ui.formatFound(tasks.find(arguments));
+    }
+
+    /** Adds a todo whose description is the whole of the argument text. */
+    private String handleTodo(String arguments) throws PanException {
+        requireArguments(arguments,
+                " Ehhh? PanPan is confused... Is there supposed to be something after todo?");
+        return addTask(new Todo(arguments));
+    }
+
+    /** Marks the task the user numbered as done. */
+    private String handleMark(String arguments) throws PanException {
+        Task task = tasks.get(parseTaskNumber(arguments, tasks.size(), "mark"));
+        task.markAsDone();
+        saveTasks();
+        return ui.formatMarked(task);
+    }
+
+    /** Marks the task the user numbered as not done. */
+    private String handleUnmark(String arguments) throws PanException {
+        Task task = tasks.get(parseTaskNumber(arguments, tasks.size(), "unmark"));
+        task.markAsNotDone();
+        saveTasks();
+        return ui.formatUnmarked(task);
+    }
+
+    /** Removes the task the user numbered from the list. */
+    private String handleDelete(String arguments) throws PanException {
+        requireArguments(arguments,
+                " Ehhh? PanPan is confused... Which task do you wanna delete?");
+        Task removed = tasks.remove(parseTaskNumber(arguments, tasks.size(), "delete"));
+        saveTasks();
+        return ui.formatDeleted(removed, tasks.size());
+    }
+
+    /**
+     * Adds a task, saves the updated list and returns the confirmation
+     * message. Shared by the {@code todo}, {@code deadline} and {@code event}
+     * commands, which differ only in how they build the task.
+     *
+     * @param task the newly built task to add.
+     * @return the reply confirming the addition.
+     */
+    private String addTask(Task task) {
+        tasks.add(task);
+        saveTasks();
+        return ui.formatAdded(task);
+    }
+
+    /** Writes the current task list to disk so it survives a restart. */
+    private void saveTasks() {
+        storage.save(tasks.asList());
+    }
+
+    /**
+     * Rejects a command that needs arguments but was given none.
+     *
+     * @param arguments the text after the command word.
+     * @param message   the PanPan-voiced complaint to show the user.
+     * @throws PanException if {@code arguments} is empty.
+     */
+    private static void requireArguments(String arguments, String message) throws PanException {
+        if (arguments.isEmpty()) {
+            throw new PanException(message);
+        }
     }
 
     /**
