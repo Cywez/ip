@@ -41,11 +41,15 @@ public class TaskList {
      * @param index position of the task to remove (already range-checked by the caller).
      */
     public Task remove(int index) {
+        assert index >= 0 && index < tasks.size()
+                : "index should already be range-checked by the caller, see Pan.parseTaskNumber";
         return tasks.remove(index);
     }
 
     /** Returns the task at the given 0-based index. */
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size()
+                : "index should already be range-checked by the caller, see Pan.parseTaskNumber";
         return tasks.get(index);
     }
 
@@ -67,6 +71,7 @@ public class TaskList {
      * @param keyword text to search for within each task's description.
      */
     public TaskList find(String keyword) {
+        assert keyword != null : "keyword should never be null, Parser.arguments() returns \"\" at worst";
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
             if (task.getDescription().contains(keyword)) {

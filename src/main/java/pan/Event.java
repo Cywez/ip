@@ -17,6 +17,9 @@ public class Event extends Task {
     /** Creates an event with the given description, running from {@code start} to {@code end}. */
     public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
+        assert start != null && end != null
+                : "start/end should never be null: Parser.parseDateTime()/parseStoredDateTime() "
+                + "always return a value or throw, never null";
         this.start = start;
         this.end = end;
     }
