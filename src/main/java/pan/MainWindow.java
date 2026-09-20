@@ -2,7 +2,9 @@ package pan;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -15,8 +17,9 @@ import javafx.util.Duration;
  * Controller for {@code MainWindow.fxml}.
  *
  * <p>The layout (scroll area, text field, "Send" button) is described in the
- * FXML file; this class only holds references to those controls - injected via
- * {@code @FXML} - and reacts to the user pressing Enter or clicking "Send".
+ * FXML file and its colours in {@code styles.css}; this class only holds
+ * references to those controls - injected via {@code @FXML} - and reacts to
+ * the user pressing Enter or clicking "Send".
  */
 public class MainWindow extends AnchorPane {
 
@@ -34,16 +37,25 @@ public class MainWindow extends AnchorPane {
 
     private Pan pan;
 
+    /** Width a row of bubbles has to work with: the container minus its padding. */
+    private DoubleBinding chatWidth;
+
     private final Image userImage = new Image(getClass().getResourceAsStream("/images/DaHuman.png"));
     private final Image panImage = new Image(getClass().getResourceAsStream("/images/DaPan.png"));
 
     /**
      * Runs once, right after the {@code @FXML} fields are injected. Keeps the
-     * scroll area pinned to the newest message as the dialog container grows.
+     * scroll area pinned to the newest message as the dialog container grows,
+     * and works out how much width a bubble may take.
      */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+
+        // A VBox's width includes its padding, which bubbles cannot use.
+        Insets padding = dialogContainer.getPadding();
+        chatWidth = dialogContainer.widthProperty()
+                .subtract(padding.getLeft() + padding.getRight());
     }
 
     /**
@@ -53,7 +65,7 @@ public class MainWindow extends AnchorPane {
      */
     public void setPan(Pan pan) {
         this.pan = pan;
-        dialogContainer.getChildren().add(DialogBox.getPanDialog(pan.getWelcome(), panImage));
+        addBubble(DialogBox.getPanDialog(pan.getWelcome(), panImage));
     }
 
     /**
@@ -68,9 +80,8 @@ public class MainWindow extends AnchorPane {
         }
 
         String response = pan.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getPanDialog(response, panImage));
+        addBubble(DialogBox.getUserDialog(input, userImage));
+        addBubble(DialogBox.getPanDialog(response, panImage));
         userInput.clear();
 
         if (pan.isExit()) {
@@ -80,5 +91,16 @@ public class MainWindow extends AnchorPane {
             pause.setOnFinished((event) -> Platform.exit());
             pause.play();
         }
+    }
+
+    /**
+     * Adds one bubble to the conversation, capping its width against the chat
+     * area so a long reply wraps into a column instead of running edge to edge.
+     *
+     * @param bubble the bubble to show next.
+     */
+    private void addBubble(DialogBox bubble) {
+        bubble.limitWidthTo(chatWidth);
+        dialogContainer.getChildren().add(bubble);
     }
 }
