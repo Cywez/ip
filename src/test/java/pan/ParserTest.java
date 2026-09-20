@@ -239,6 +239,28 @@ public class ParserTest {
     }
 
     @Test
+    public void parseEvent_endBeforeStart_exceptionThrown() {
+        assertThrows(PanException.class, () ->
+                Parser.parseEvent("party /from 2019-12-01 1600 /to 2019-12-01 1400"));
+    }
+
+    @Test
+    public void parseEvent_endEqualsStart_isAccepted() throws PanException {
+        Event event = Parser.parseEvent("party /from 2019-12-01 1600 /to 2019-12-01 1600");
+
+        assertEquals("E | 0 | party | 2019-12-01T16:00 | 2019-12-01T16:00",
+                event.toFileString());
+    }
+
+    @Test
+    public void parseUpdateOption_upperCaseOption_isFoldedToLowerCase() throws PanException {
+        Parser.UpdateOption option = Parser.parseUpdateOption("/BY 2019-12-01 1800");
+
+        assertEquals("by", option.name());
+        assertEquals("2019-12-01 1800", option.value());
+    }
+
+    @Test
     public void parseUpdateOption_twoOptions_exceptionThrown() {
         assertThrows(PanException.class, () ->
                 Parser.parseUpdateOption("/desc lunch /by 2019-12-01 1800"));

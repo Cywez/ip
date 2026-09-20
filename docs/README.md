@@ -1,6 +1,4 @@
-# Pan User Guide
-
-// Update the title above to match the actual product name
+# PanPan User Guide
 
 // Product screenshot goes here
 
@@ -28,3 +26,18 @@ expected output
 ## Feature XYZ
 
 // Feature details
+
+## Acknowledgements
+
+- The project skeleton, the Gradle setup and `CONTRIBUTORS.md` come from the
+  [se-education.org](https://se-education.org/) `ip` template.
+- The JavaFX front end — `Launcher`, `Main`, `MainWindow`, `DialogBox` and the
+  `fx:root` pattern in the FXML files — follows the se-education
+  [JavaFX tutorial](https://se-education.org/guides/tutorials/javaFx.html),
+  Parts 1 to 4.
+- The avatar images in `src/main/resources/images/` were sourced from the web;
+  the original creator is not known.
+- The Java coding conventions and the Git commit-message conventions followed
+  here are the [se-education guides](https://se-education.org/guides/).
+- Some code in this project was written with the assistance of Claude
+  (Anthropic), reviewed and accepted by me.

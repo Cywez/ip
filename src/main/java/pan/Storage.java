@@ -13,6 +13,11 @@ import java.util.Scanner;
  * {@code ./data/pan.txt}. Using a relative, separator-neutral path means
  * the chatbot behaves the same regardless of which folder it is run from
  * or which operating system is used.
+ *
+ * <p>Nothing here prints: a failure is reported back through the return value
+ * or through {@link #hasLoadError()} / {@link #getSkippedLineCount()}, and
+ * {@link Ui} supplies the wording. Printing here would have reached only the
+ * console, leaving a GUI user with no hint that a save had failed.
  */
 public class Storage {
 
@@ -23,6 +28,12 @@ public class Storage {
      */
     private static final File FILE = new File("data", "pan.txt");
 
+    /** Save-file lines the last load could not understand. */
+    private int skippedLineCount = 0;
+
+    /** Whether the last load found a save file it could not read at all. */
+    private boolean hasLoadError = false;
+
     /**
      * Loads the saved tasks from disk.
      *
@@ -32,6 +43,8 @@ public class Storage {
      */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
+        skippedLineCount = 0;
+        hasLoadError = false;
         if (!FILE.exists()) {
             return tasks;
         }
@@ -46,11 +59,11 @@ public class Storage {
                 } catch (RuntimeException e) {
                     // One malformed line (e.g. an old save with a free-text
                     // date like "Sunday") should not stop the rest loading.
-                    System.out.println(" PanPan skipped a save line it couldn't understand~ (；一_一)");
+                    skippedLineCount++;
                 }
             }
         } catch (IOException e) {
-            System.out.println(" PanPan couldn't read the save file... starting fresh! (｡•́︿•̀｡)");
+            hasLoadError = true;
         }
         return tasks;
     }
@@ -60,8 +73,10 @@ public class Storage {
      * Creates the {@code ./data} folder first if it is missing.
      *
      * @param tasks the current task list to persist.
+     * @return whether the list reached the disk. A {@code false} lets the
+     *     caller warn the user instead of losing their tasks in silence.
      */
-    public void save(ArrayList<Task> tasks) {
+    public boolean save(ArrayList<Task> tasks) {
         try {
             File parent = FILE.getParentFile();
             if (parent != null) {
@@ -72,9 +87,20 @@ public class Storage {
                     writer.write(task.toFileString() + System.lineSeparator());
                 }
             }
+            return true;
         } catch (IOException e) {
-            System.out.println(" PanPan couldn't save your tasks... sorryyy! (っ- ‸ - ς)");
+            return false;
         }
+    }
+
+    /** Returns how many save-file lines the last load had to skip. */
+    public int getSkippedLineCount() {
+        return skippedLineCount;
+    }
+
+    /** Returns whether the last load hit a save file it could not read. */
+    public boolean hasLoadError() {
+        return hasLoadError;
     }
 
     /**

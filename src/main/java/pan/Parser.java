@@ -82,7 +82,9 @@ public class Parser {
         }
 
         String withoutSlash = trimmed.substring(1);
-        String name = commandWord(withoutSlash);
+        // Folded to lower case so /DESC and /By work like /desc and /by,
+        // matching the way the command word itself is treated.
+        String name = commandWord(withoutSlash).toLowerCase(Locale.ROOT);
         String value = arguments(withoutSlash);
         if (value.isEmpty()) {
             throw new PanException(" Ooh? PanPan sees \"/" + name
@@ -126,7 +128,8 @@ public class Parser {
      * @param args text of the form
      *     {@code DESCRIPTION /from yyyy-MM-dd HHmm /to yyyy-MM-dd HHmm}.
      * @throws PanException if the description, {@code /from} or {@code /to} is
-     *     missing, or a date cannot be understood.
+     *     missing, a date cannot be understood, or the event would end before
+     *     it starts.
      */
     public static Event parseEvent(String args) throws PanException {
         String[] parts = args.split("/from", 2);
@@ -144,6 +147,7 @@ public class Parser {
         }
         LocalDateTime from = parseDateTime(fromToParts[0].trim());
         LocalDateTime to = parseDateTime(fromToParts[1].trim());
+        Event.requireInOrder(from, to);
         return new Event(description, from, to);
     }
 

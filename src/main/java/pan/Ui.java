@@ -21,6 +21,18 @@ public class Ui {
     /** The single shared input source for a console session. */
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Returns whether the console still has a line to give.
+     *
+     * <p>False once input runs out - the user pressed Ctrl+Z (Windows) or
+     * Ctrl+D (Unix), or a piped file ended. Without this check
+     * {@link #readCommand()} throws {@code NoSuchElementException} and the
+     * app dies with a stack trace instead of saying goodbye.
+     */
+    public boolean hasCommand() {
+        return scanner.hasNextLine();
+    }
+
     /** Reads the next command line the user types (console only). */
     public String readCommand() {
         return scanner.nextLine();
@@ -31,16 +43,21 @@ public class Ui {
         System.out.println(LINE);
     }
 
-    /** Prints the ASCII banner and greeting shown once at console startup. */
-    public void showWelcome() {
-        String banner = " ____      _     _   _ \n"
-                + "|  _ \\    / \\   | \\ | |\n"
-                + "| |_) |  / _ \\  |  \\| |\n"
-                + "|  __/  / ___ \\ | |\\  |\n"
-                + "|_|    /_/   \\_\\|_| \\_|\n";
+    /**
+     * Prints the ASCII banner and the greeting shown once at console startup.
+     *
+     * @param greeting the greeting text, which the caller may have extended
+     *     with warnings about the save file.
+     */
+    public void showWelcome(String greeting) {
+        String banner = " ____      _     _   _   ____      _     _   _ \n"
+                + "|  _ \\    / \\   | \\ | | |  _ \\    / \\   | \\ | |\n"
+                + "| |_) |  / _ \\  |  \\| | | |_) |  / _ \\  |  \\| |\n"
+                + "|  __/  / ___ \\ | |\\  | |  __/  / ___ \\ | |\\  |\n"
+                + "|_|    /_/   \\_\\|_| \\_| |_|    /_/   \\_\\|_| \\_|\n";
         showLine();
         System.out.println(banner);
-        System.out.println(getWelcome());
+        System.out.println(greeting);
         showLine();
     }
 
@@ -57,6 +74,26 @@ public class Ui {
     /** Returns the farewell shown when the user types {@code bye}. */
     public String getGoodbye() {
         return " Byeee Byeee! PanPan will stay cute for you in the meantime! Mwah mwah~ (˘▾˘~)";
+    }
+
+    /** Returns the warning shown when the task list could not be written to disk. */
+    public String getSaveError() {
+        return " PanPan couldn't save your tasks... sorryyy! (っ- ‸ - ς)";
+    }
+
+    /** Returns the warning shown when an existing save file could not be read. */
+    public String getLoadError() {
+        return " PanPan couldn't read the save file... starting fresh! (｡•́︿•̀｡)";
+    }
+
+    /**
+     * Returns the warning shown when some save-file lines were unreadable and
+     * had to be left out.
+     *
+     * @param count how many lines were skipped.
+     */
+    public String getSkippedLinesWarning(int count) {
+        return " PanPan skipped " + count + " save line(s) it couldn't understand~ (；一_一)";
     }
 
     /** Returns the whole task list as text, numbered from 1. */

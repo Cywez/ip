@@ -119,6 +119,42 @@ public class TaskTest {
         assertThrows(PanException.class, () -> todo.applyUpdate("colour", "red"));
     }
 
+    // ---------- an event may not be made to end before it starts ----------
+
+    @Test
+    public void applyUpdate_toBeforeStart_exceptionThrown() {
+        Event event = new Event("project meeting", TWO_PM, FOUR_PM);
+
+        assertThrows(PanException.class, () -> event.applyUpdate("to", "2019-12-01 1300"));
+    }
+
+    @Test
+    public void applyUpdate_toBeforeStart_leavesEventUnchanged() {
+        Event event = new Event("project meeting", TWO_PM, FOUR_PM);
+
+        assertThrows(PanException.class, () -> event.applyUpdate("to", "2019-12-01 1300"));
+
+        assertEquals("E | 0 | project meeting | 2019-12-01T14:00 | 2019-12-01T16:00",
+                event.toFileString());
+    }
+
+    @Test
+    public void applyUpdate_fromAfterEnd_exceptionThrown() {
+        Event event = new Event("project meeting", TWO_PM, FOUR_PM);
+
+        assertThrows(PanException.class, () -> event.applyUpdate("from", "2019-12-01 1700"));
+    }
+
+    @Test
+    public void applyUpdate_fromEqualsEnd_isAccepted() throws PanException {
+        Event event = new Event("project meeting", TWO_PM, FOUR_PM);
+
+        event.applyUpdate("from", "2019-12-01 1600");
+
+        assertEquals("E | 0 | project meeting | 2019-12-01T16:00 | 2019-12-01T16:00",
+                event.toFileString());
+    }
+
     // ---------- a rejected update must not change anything ----------
 
     @Test

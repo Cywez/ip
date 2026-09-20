@@ -1,5 +1,7 @@
 package pan;
 
+import java.util.Locale;
+
 /**
  * Entry point for the PanPan chatbot. Wires together the three collaborators -
  * the user interface ({@link Ui}), the on-disk task store ({@link Storage}) and
@@ -20,6 +22,9 @@ public class Pan {
     /** Set to {@code true} once the user has asked to exit with {@code bye}. */
     private boolean isExit;
 
+    /** Whether the most recent change reached the save file. */
+    private boolean isSaved = true;
+
     /**
      * Builds the chatbot and loads any previously saved tasks so the list
      * survives between runs.
@@ -37,10 +42,13 @@ public class Pan {
      * {@code bye}.
      */
     public void run() {
-        ui.showWelcome();
+        ui.showWelcome(getWelcome());
 
         while (!isExit) {
-            String input = ui.readCommand();
+            // Input running out - Ctrl+Z on Windows, Ctrl+D on Unix, or a
+            // piped file ending - is a request to stop, so treat it exactly
+            // like typing bye. Reading past the end would otherwise throw.
+            String input = ui.hasCommand() ? ui.readCommand() : "bye";
             System.out.println(getResponse(input));
             if (!isExit) {
                 ui.showLine();
@@ -62,42 +70,82 @@ public class Pan {
      * @return the reply to show the user.
      */
     public String getResponse(String input) {
-        String command = Parser.commandWord(input);
-        String arguments = Parser.arguments(input);
+        isSaved = true;
 
+        String reply;
         try {
-            switch (command) {
-            case "bye":
-                return handleBye();
-            case "list":
-                return ui.formatList(tasks);
-            case "find":
-                return handleFind(arguments);
-            case "todo":
-                return handleTodo(arguments);
-            case "deadline":
-                return addTask(Parser.parseDeadline(arguments));
-            case "event":
-                return addTask(Parser.parseEvent(arguments));
-            case "mark":
-                return handleMark(arguments);
-            case "unmark":
-                return handleUnmark(arguments);
-            case "delete":
-                return handleDelete(arguments);
-            case "update":
-                return handleUpdate(arguments);
-            default:
-                throw new PanException(" SORRYYY! PanPan don't know what that means. (╥﹏╥)");
-            }
+            reply = dispatch(input);
         } catch (PanException e) {
             return e.getMessage();
+        }
+        // A failed save must not pass unnoticed: the console would once have
+        // printed it and the GUI would have shown nothing at all.
+        return isSaved ? reply : reply + "\n" + ui.getSaveError();
+    }
+
+    /**
+     * Routes one line of input to the handler for its command word.
+     *
+     * <p>The command word is lower-cased so {@code TODO} and {@code Todo}
+     * work as well as {@code todo}; only the word is folded, never the
+     * description that follows it.
+     *
+     * @param input the raw line the user typed.
+     * @return the reply to show the user.
+     * @throws PanException if the input names no command PanPan knows, or
+     *     the command's own arguments are unusable.
+     */
+    private String dispatch(String input) throws PanException {
+        String command = Parser.commandWord(input).toLowerCase(Locale.ROOT);
+        String arguments = Parser.arguments(input);
+
+        switch (command) {
+        case "bye":
+            return handleBye();
+        case "list":
+            return ui.formatList(tasks);
+        case "find":
+            return handleFind(arguments);
+        case "todo":
+            return handleTodo(arguments);
+        case "deadline":
+            return addTask(Parser.parseDeadline(arguments));
+        case "event":
+            return addTask(Parser.parseEvent(arguments));
+        case "mark":
+            return handleMark(arguments);
+        case "unmark":
+            return handleUnmark(arguments);
+        case "delete":
+            return handleDelete(arguments);
+        case "update":
+            return handleUpdate(arguments);
+        default:
+            throw new PanException(" SORRYYY! PanPan don't know what that means. (╥﹏╥)");
         }
     }
 
     /** Returns PanPan's opening greeting, for the GUI to show before any input. */
     public String getWelcome() {
-        return ui.getWelcome();
+        return ui.getWelcome() + describeLoadProblems();
+    }
+
+    /**
+     * Returns any complaints about the save file read at startup, ready to be
+     * appended to the greeting so both front ends surface them.
+     *
+     * @return the warnings, each on its own line, or an empty string if the
+     *     save file loaded cleanly.
+     */
+    private String describeLoadProblems() {
+        StringBuilder warnings = new StringBuilder();
+        if (storage.hasLoadError()) {
+            warnings.append("\n").append(ui.getLoadError());
+        }
+        if (storage.getSkippedLineCount() > 0) {
+            warnings.append("\n").append(ui.getSkippedLinesWarning(storage.getSkippedLineCount()));
+        }
+        return warnings.toString();
     }
 
     /** Returns {@code true} once the user has typed {@code bye}. */
@@ -188,7 +236,7 @@ public class Pan {
 
     /** Writes the current task list to disk so it survives a restart. */
     private void saveTasks() {
-        storage.save(tasks.asList());
+        isSaved = storage.save(tasks.asList());
     }
 
     /**
