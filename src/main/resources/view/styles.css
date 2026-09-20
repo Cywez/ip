@@ -24,8 +24,18 @@
     -pan-text: #4A3B38;
     -pan-muted: #C9AFB6;
 
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    -fx-font-size: 14px;
+    /*
+     * Rounded letterforms to match the panda. The stack degrades sanely off
+     * Windows: Comic Sans MS also ships with macOS, Chalkboard SE is the Mac
+     * equivalent, and Comic Neue is the usual Linux package. JavaFX has no
+     * @font-face, so a font must already be on the machine - hence a stack
+     * rather than a bundled file.
+     *
+     * 15px rather than 14: this face has a smaller x-height than Segoe UI, so
+     * the same nominal size reads noticeably smaller.
+     */
+    -fx-font-family: "Comic Sans MS", "Comic Neue", "Chalkboard SE", sans-serif;
+    -fx-font-size: 15px;
     -fx-background-color: -pan-cream;
 }
 
