@@ -25,6 +25,20 @@ public class Event extends Task {
     }
 
     @Override
+    public void applyUpdate(String option, String value) throws PanException {
+        switch (option) {
+        case "from":
+            start = Parser.parseDateTime(value);
+            break;
+        case "to":
+            end = Parser.parseDateTime(value);
+            break;
+        default:
+            super.applyUpdate(option, value);
+        }
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString()
                 + " (from: " + Parser.formatDateTime(start)

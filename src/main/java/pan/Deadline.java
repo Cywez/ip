@@ -24,6 +24,15 @@ public class Deadline extends Task {
     }
 
     @Override
+    public void applyUpdate(String option, String value) throws PanException {
+        if (option.equals("by")) {
+            by = Parser.parseDateTime(value);
+            return;
+        }
+        super.applyUpdate(option, value);
+    }
+
+    @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + Parser.formatDateTime(by) + ")";
     }

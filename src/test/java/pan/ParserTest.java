@@ -190,4 +190,57 @@ public class ParserTest {
         assertThrows(PanException.class, () ->
                 Parser.parseEvent("project meeting /from 2019-12-01 1600 /to someday"));
     }
+    // ---------- parseUpdateOption ----------
+
+    @Test
+    public void parseUpdateOption_dateOption_returnsNameAndValue() throws PanException {
+        Parser.UpdateOption option = Parser.parseUpdateOption("/to 2019-12-01 1900");
+
+        assertEquals("to", option.name());
+        assertEquals("2019-12-01 1900", option.value());
+    }
+
+    @Test
+    public void parseUpdateOption_descriptionOption_keepsWholeValue() throws PanException {
+        Parser.UpdateOption option = Parser.parseUpdateOption("/desc read a long book");
+
+        assertEquals("desc", option.name());
+        assertEquals("read a long book", option.value());
+    }
+
+    @Test
+    public void parseUpdateOption_surroundingWhitespace_isTrimmed() throws PanException {
+        Parser.UpdateOption option = Parser.parseUpdateOption("   /by 2019-12-01 1800   ");
+
+        assertEquals("by", option.name());
+        assertEquals("2019-12-01 1800", option.value());
+    }
+
+    @Test
+    public void parseUpdateOption_slashInsideValue_isNotASecondOption() throws PanException {
+        Parser.UpdateOption option = Parser.parseUpdateOption("/desc read a/b");
+
+        assertEquals("read a/b", option.value());
+    }
+
+    @Test
+    public void parseUpdateOption_missingSlash_exceptionThrown() {
+        assertThrows(PanException.class, () -> Parser.parseUpdateOption("by 2019-12-01 1800"));
+    }
+
+    @Test
+    public void parseUpdateOption_missingValue_exceptionThrown() {
+        assertThrows(PanException.class, () -> Parser.parseUpdateOption("/by"));
+    }
+
+    @Test
+    public void parseUpdateOption_emptyInput_exceptionThrown() {
+        assertThrows(PanException.class, () -> Parser.parseUpdateOption(""));
+    }
+
+    @Test
+    public void parseUpdateOption_twoOptions_exceptionThrown() {
+        assertThrows(PanException.class, () ->
+                Parser.parseUpdateOption("/desc lunch /by 2019-12-01 1800"));
+    }
 }

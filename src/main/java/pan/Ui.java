@@ -120,6 +120,12 @@ public class Ui {
                 + "\n Now you have " + remaining + " tasks in the list!";
     }
 
+    /** Returns the confirmation that one of a task's details was changed. */
+    public String formatUpdated(Task task) {
+        return " Ooooh, PanPan changed it for you! Everything else stays the same~ (｡•̀ᴗ-)✧"
+                + "\n   " + task;
+    }
+
     /** Closes the input source at the end of a console session. */
     public void close() {
         scanner.close();

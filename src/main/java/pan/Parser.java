@@ -46,6 +46,56 @@ public class Parser {
         return space == -1 ? "" : trimmed.substring(space + 1).trim();
     }
 
+    /**
+     * One {@code /option value} pair from an {@code update} command, for
+     * example {@code /to 2019-10-15 1900}.
+     *
+     * <p>A {@code record} rather than a normal class because this is pure data
+     * with no behaviour - Java generates the constructor, the {@code name()}
+     * and {@code value()} accessors, {@code equals} and {@code toString} for
+     * us. Written out as a class with two final fields and two getters it
+     * would say the same thing in fifteen more lines.
+     *
+     * @param name  the option word without its leading slash, e.g. {@code "to"}.
+     * @param value the text after the option word, e.g. {@code "2019-10-15 1900"}.
+     */
+    public record UpdateOption(String name, String value) {}
+
+    /**
+     * Splits the "what to change" half of an {@code update} command into the
+     * option being changed and its new value.
+     *
+     * <p>Exactly one option is allowed per command. Without that rule
+     * {@code update 2 /desc lunch /to 2019-10-15 1900} would quietly set the
+     * description to the whole of {@code "lunch /to 2019-10-15 1900"}.
+     *
+     * @param args text after the task number, of the form {@code /OPTION NEW_VALUE}.
+     * @return the option name (without its slash) and the new value.
+     * @throws PanException if the text names no option, gives no value, or
+     *     names more than one option.
+     */
+    public static UpdateOption parseUpdateOption(String args) throws PanException {
+        String trimmed = args.trim();
+        if (!trimmed.startsWith("/")) {
+            throw new PanException(" Urmm... PanPan needs to know WHICH bit to change~ "
+                    + "like \"update 2 /by 2019-10-15 1800\"!");
+        }
+
+        String withoutSlash = trimmed.substring(1);
+        String name = commandWord(withoutSlash);
+        String value = arguments(withoutSlash);
+        if (value.isEmpty()) {
+            throw new PanException(" Ehhh? PanPan is confused... change \"/" + name + "\" to WHAT??");
+        }
+        // A slash that starts a new word means a second option was given. A
+        // slash inside a word (as in "read a/b") is left alone.
+        if (value.contains(" /")) {
+            throw new PanException(" Ooh, one change at a time please~ "
+                    + "PanPan can only fix one thing per update!");
+        }
+        return new UpdateOption(name, value);
+    }
+
     // ---------- task builders ----------
 
     /**
