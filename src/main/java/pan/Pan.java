@@ -119,14 +119,14 @@ public class Pan {
     /** Returns the tasks whose description contains the keyword the user gave. */
     private String handleFind(String arguments) throws PanException {
         requireArguments(arguments,
-                " Ehhh? PanPan is confused... What word should PanPan look for?");
+                " Ehhh? PanPan is confused... What word should PanPan hunt for? (・・?)");
         return ui.formatFound(tasks.find(arguments));
     }
 
     /** Adds a todo whose description is the whole of the argument text. */
     private String handleTodo(String arguments) throws PanException {
         requireArguments(arguments,
-                " Ehhh? PanPan is confused... Is there supposed to be something after todo?");
+                " Urmm, PanPan is waiting~ What should PanPan write down after todo?");
         return addTask(new Todo(arguments));
     }
 
@@ -149,7 +149,7 @@ public class Pan {
     /** Removes the task the user numbered from the list. */
     private String handleDelete(String arguments) throws PanException {
         requireArguments(arguments,
-                " Ehhh? PanPan is confused... Which task do you wanna delete?");
+                " Ooh! PanPan needs a number~ Which task should PanPan wave byebye to?");
         Task removed = tasks.remove(parseTaskNumber(arguments, tasks.size(), "delete"));
         saveTasks();
         return ui.formatDeleted(removed, tasks.size());
@@ -163,7 +163,7 @@ public class Pan {
      */
     private String handleUpdate(String arguments) throws PanException {
         requireArguments(arguments,
-                " Ehhh? PanPan is confused... Which task do you wanna change?");
+                " Hmmm? PanPan can't guess~ Which task should PanPan fix for you? (｡・ω・｡)");
         Task task = tasks.get(parseTaskNumber(Parser.commandWord(arguments), tasks.size(), "update"));
 
         Parser.UpdateOption change = Parser.parseUpdateOption(Parser.arguments(arguments));
@@ -224,7 +224,7 @@ public class Pan {
         }
         if (index < 0 || index >= size) {
             throw new PanException(" Ehh?? PanPan looked everywhere but that task number "
-                    + "doesn't exist~ (｡•́︿•̀｡) PanPan is confused!!");
+                    + "isn't there~ (´・_・`)");
         }
         assert index >= 0 && index < size
                 : "the range check above should guarantee a valid index at this point";

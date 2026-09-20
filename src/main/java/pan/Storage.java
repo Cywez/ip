@@ -46,7 +46,7 @@ public class Storage {
                 } catch (RuntimeException e) {
                     // One malformed line (e.g. an old save with a free-text
                     // date like "Sunday") should not stop the rest loading.
-                    System.out.println(" PanPan skipped a save line it couldn't understand~ (｡•́︿•̀｡)");
+                    System.out.println(" PanPan skipped a save line it couldn't understand~ (；一_一)");
                 }
             }
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class Storage {
                 }
             }
         } catch (IOException e) {
-            System.out.println(" PanPan couldn't save your tasks... sorryyy! (╥﹏╥)");
+            System.out.println(" PanPan couldn't save your tasks... sorryyy! (っ- ‸ - ς)");
         }
     }
 

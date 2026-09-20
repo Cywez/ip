@@ -85,7 +85,8 @@ public class Parser {
         String name = commandWord(withoutSlash);
         String value = arguments(withoutSlash);
         if (value.isEmpty()) {
-            throw new PanException(" Ehhh? PanPan is confused... change \"/" + name + "\" to WHAT??");
+            throw new PanException(" Ooh? PanPan sees \"/" + name
+                    + "\" but nothing after it~ change it to what?? (・_・?)");
         }
         // A slash that starts a new word means a second option was given. A
         // slash inside a word (as in "read a/b") is left alone.
@@ -110,10 +111,10 @@ public class Parser {
         String[] parts = args.split("/by", 2);
         String description = parts[0].trim();
         if (description.isEmpty()) {
-            throw new PanException(" Ehhh? PanPan is confused... Did you want PanPan to write something to deadline?");
+            throw new PanException(" Ehhh? PanPan is holding an empty deadline~ what should PanPan write on it?");
         }
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new PanException(" Urmm.. A deadline needs a /by date, PanPan can't guess it for you~");
+            throw new PanException(" Urmm... A deadline needs a /by date, PanPan can't guess it for you~");
         }
         LocalDateTime by = parseDateTime(parts[1].trim());
         return new Deadline(description, by);
@@ -131,14 +132,15 @@ public class Parser {
         String[] parts = args.split("/from", 2);
         String description = parts[0].trim();
         if (description.isEmpty()) {
-            throw new PanException(" Ehhh? PanPan is confused... Did you want PanPan to write something to event?");
+            throw new PanException(" Hehe, PanPan can't make an event with no name~ what should PanPan call it?");
         }
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new PanException(" OOPS!!! An event needs both /from and /to, teehee~");
+            throw new PanException(" Ooopsie, PanPan needs a /from time "
+                    + "before it can pencil in your event~ (＞人＜)");
         }
         String[] fromToParts = parts[1].trim().split("/to", 2);
         if (fromToParts.length < 2 || fromToParts[0].trim().isEmpty() || fromToParts[1].trim().isEmpty()) {
-            throw new PanException(" OOPS!!! An event needs both /from and /to, teehee~");
+            throw new PanException(" Almost! PanPan still needs a /to time to finish off your event~");
         }
         LocalDateTime from = parseDateTime(fromToParts[0].trim());
         LocalDateTime to = parseDateTime(fromToParts[1].trim());

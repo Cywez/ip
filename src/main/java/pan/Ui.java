@@ -49,19 +49,14 @@ public class Ui {
      * GUI chat bubble.
      */
     public String getWelcome() {
-        return "Heyyy hihi~ (๑>ᴗ<๑) It's meeeee, PanPan!!\n"
-                + "PanPan is SUPER happy you're here today, teehee~\n"
-                + "What can PanPan do for you todayy??";
+        return " Heyyy hihi~ (๑>ᴗ<๑) It's meeeee, PanPan!!\n"
+                + " PanPan is SUPER happy you're here today, teehee~\n"
+                + " What can PanPan do for you todayy??";
     }
 
     /** Returns the farewell shown when the user types {@code bye}. */
     public String getGoodbye() {
         return " Byeee Byeee! PanPan will stay cute for you in the meantime! Mwah mwah~ (˘▾˘~)";
-    }
-
-    /** Prints the warning shown when the save file cannot be read at startup. */
-    public void showLoadingError() {
-        System.out.println(" PanPan couldn't read the save file... starting fresh! (｡•́︿•̀｡)");
     }
 
     /** Returns the whole task list as text, numbered from 1. */
@@ -84,7 +79,8 @@ public class Ui {
         if (matches.isEmpty()) {
             return " Awww, PanPan looked hard but found no matching tasks~ (｡•́︿•̀｡)";
         }
-        StringBuilder message = new StringBuilder(" Here are the matching tasks in your list:");
+        StringBuilder message = new StringBuilder(" Oooh, PanPan found these ones "
+                + "hiding in your list~ (⁎˃ᴗ˂⁎)");
         for (int i = 0; i < matches.size(); i++) {
             message.append("\n ").append(i + 1).append(".").append(matches.get(i));
         }
@@ -105,7 +101,7 @@ public class Ui {
     /** Returns the confirmation that a task was marked not done. */
     public String formatUnmarked(Task task) {
         return " Awww not done yet? PanPan unmarked this task already... "
-                + "PanPan thinks you can do better!:\n   " + task;
+                + "PanPan thinks you can do better!\n   " + task;
     }
 
     /**
@@ -117,12 +113,12 @@ public class Ui {
     public String formatDeleted(Task removed, int remaining) {
         return " Okayyy, PanPan waved byebye to this task and removed it from the list~ (｡•̀ᴗ-)✧"
                 + "\n   " + removed
-                + "\n Now you have " + remaining + " tasks in the list!";
+                + "\n PanPan is now keeping " + remaining + " tasks safe for you!";
     }
 
     /** Returns the confirmation that one of a task's details was changed. */
     public String formatUpdated(Task task) {
-        return " Ooooh, PanPan changed it for you! Everything else stays the same~ (｡•̀ᴗ-)✧"
+        return " Ooooh, PanPan changed just that bit! Everything else stays the same~ (◕ᴗ◕✿)"
                 + "\n   " + task;
     }
 
